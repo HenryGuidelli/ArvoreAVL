@@ -129,9 +129,115 @@ No* inserir(No *raiz, int x){
     return raiz;
 }
 
+No* remover(No *raiz, int chave){
+    if(raiz == NULL){
+        printf("Valor não encontrado");
+        return NULL;
+    }
+    else{
+        if(raiz->valor == chave){
+            if(raiz->esquerdo == NULL && raiz->direito == NULL){
+                free(raiz);
+                printf("Elemento folha removido: %d!\n", chave);
+                return NULL;
+            }
+            else{
+                if(raiz->esquerdo != NULL && raiz->direito != NULL){
+                    No *aux = raiz->esquerdo;
+                    while(aux->direito != NULL){
+                        aux = aux->direito;
+                    }
+
+                    raiz->valor = aux->valor;
+                    aux->valor = chave;
+
+                    printf("Elemento trocado: %d!\n", chave);
+
+                    return raiz;                    
+                }
+                else{
+                    No *aux;
+
+                    if(raiz->esquerdo != NULL){
+                        aux = raiz->esquerdo;
+                    }
+                    else{
+                        aux = raiz->direito;
+                    }
+
+                    free(raiz);
+                    printf("Elemento com 1 filho removido: %d!\n", chave);
+                    
+                    return aux;
+                }
+            }
+        }
+        else if(chave < raiz->valor){
+                raiz->esquerdo = remover(raiz->esquerdo, chave);
+            }
+            else{
+                raiz->direito = remover(raiz->direito, chave);
+            }
+        
+        raiz->altura = maior(alturaNo(raiz->esquerdo), alturaNo(raiz->direito) + 1);
+
+        raiz = balancearARV(raiz);
+    }
+
+    return raiz;
+
+}
+
+void imprimir(No *raiz, int nivel){
+    if(raiz){
+        imprimir(raiz->direito, nivel + 1);
+        printf("\n\n");
+
+        for(int i = 0; i < nivel; i++){
+            printf("\t");
+        }
+
+        printf("%d", raiz->valor);
+
+        imprimir(raiz->esquerdo, nivel + 1);
+    }
+}
+
 int main(){
 
+    int opcao, valor;
+    No *raiz = NULL;
 
+    do{
+        printf("\n\n\n\t0 - Sair\n\t1 - Inserir\n\t2 - Remover\n\t3 - Imprimir\n\n");
+        scanf("%d", &opcao);
+
+        switch(opcao){
+            case 0:
+                system("clear");
+                printf("SAINDO!");
+                break;
+            case 1:
+                printf("\tDigite o valor a ser INSERIDO: ");
+                scanf("%d", &valor);
+                raiz = inserir(raiz, valor);
+                system("clear");
+                break;
+            case 2:
+                printf("\tDigite o valor a ser REMOVIDO: ");
+                scanf("%d", &valor);
+                raiz = remover(raiz, valor);
+                system("clear");
+                break;
+            case 3:
+                system("clear");
+                imprimir(raiz, 1);
+                break;
+            default:
+                printf("OPÇÃO INVÁLIDA!!!\n");
+                system("clear");            
+        }
+    }while(opcao != 0);
 
     return 0;
 }
