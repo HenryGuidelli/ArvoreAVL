@@ -124,7 +124,7 @@ No* inserir(No *raiz, int x){
 
     raiz->altura = maior(alturaNo(raiz->esquerdo), alturaNo(raiz->direito));
 
-    raiz = balacearARV(raiz);
+    raiz = balancearARV(raiz);
 
     return raiz;
 }
